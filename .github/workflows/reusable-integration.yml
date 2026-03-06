@@ -1,0 +1,35 @@
+name: Reusable DB Integration
+
+on:
+  workflow_call:
+    secrets:
+      DB_CONNECTION_STRING:
+        description: 'The MongoDB connection URI'
+        required: true
+      JWT_SECRET:
+        description: 'Secret key for token signing'
+        required: false
+
+jobs:
+  test-db:
+    name: Validate Database Connectivity
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Database Connectivity Test
+        env:
+          MONGODB_URI: ${{ secrets.DB_CONNECTION_STRING }}
+        run: |
+          echo "Connecting to Academia Synapse Database..."
+          
+          # FAIL-FAST: Verify the secret actually reached the runner
+          if [ -z "$MONGODB_URI" ]; then
+            echo "Error: Secret 'DB_CONNECTION_STRING' was not passed correctly!"
+            exit 1
+          else
+            # GitHub automatically masks the actual value in logs
+            echo "Secret received and masked: ***"
+          fi

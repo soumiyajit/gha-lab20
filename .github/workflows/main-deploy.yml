@@ -1,0 +1,15 @@
+name: Main Deployment Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run-integration-tests:
+    name: Integration & Database Validation
+    uses: ./.github/workflows/reusable-integration.yml
+
+    secrets:
+      DB_CONNECTION_STRING: ${{ secrets.MONGODB_URI }}
